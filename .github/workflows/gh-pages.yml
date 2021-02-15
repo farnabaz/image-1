@@ -22,7 +22,7 @@ jobs:
         run: cd docs && yarn
 
       - name: Generate
-        run: yarn run docs:build
+        run: cd docs && yarn run nuxt generate
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
