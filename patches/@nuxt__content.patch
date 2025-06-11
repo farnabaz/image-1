@@ -1,0 +1,98 @@
+diff --git a/dist/module.mjs b/dist/module.mjs
+index 35568524e96afce6a786f69269c7dc26fb2eab8a..b7d42c536d66744ed0d88bc9f8e5a2c905da755c 100644
+--- a/dist/module.mjs
++++ b/dist/module.mjs
+@@ -1,50 +1,50 @@
+-import { readFile, writeFile, mkdir, rm, stat } from 'node:fs/promises';
+-import { resolveAlias, useLogger, isIgnored, updateTemplates, addVitePlugin, installModule, extendViteConfig, addTemplate, hasNuxtModule, addPlugin, addComponent, addServerHandler, addPrerenderRoutes, defineNuxtModule, createResolver, addImports, addServerImports, addTypeTemplate } from '@nuxt/kit';
+-import { hash } from 'ohash';
+-import { join, isAbsolute, dirname, extname, relative, resolve } from 'pathe';
++import { addComponent, addImports, addPlugin, addPrerenderRoutes, addServerHandler, addServerImports, addTemplate, addTypeTemplate, addVitePlugin, createResolver, defineNuxtModule, extendViteConfig, hasNuxtModule, installModule, isIgnored, resolveAlias, updateTemplates, useLogger } from '@nuxt/kit';
++import { createShikiHighlighter, parseMarkdown, rehypeHighlight } from '@nuxtjs/mdc/runtime';
+ import htmlTags from '@nuxtjs/mdc/runtime/parser/utils/html-tags-list';
+-import { pascalCase, camelCase, kebabCase } from 'scule';
+-import defu$1, { defu as defu$2, createDefu } from 'defu';
+-import { getOrderedSchemaKeys } from '../dist/runtime/internal/schema.js';
+-import { withLeadingSlash, withoutTrailingSlash, isRelative, withTrailingSlash } from 'ufo';
+-import FastGlob from 'fast-glob';
+-import { createWriteStream } from 'node:fs';
+-import { pipeline } from 'node:stream';
+-import { promisify } from 'node:util';
+-import { extract } from 'tar';
+-import { readGitConfig } from 'pkg-types';
+-import gitUrlParse from 'git-url-parse';
+-import crypto from 'node:crypto';
++import { isWebContainer } from '@webcontainer/env';
++import { createDefineConfig, loadConfig, watchConfig } from 'c12';
+ import chokidar from 'chokidar';
+-import micromatch from 'micromatch';
+-import { WebSocketServer } from 'ws';
+-import { listen } from 'listhen';
+ import cloudflareD1Connector from 'db0/connectors/cloudflare-d1';
+-import { isWebContainer } from '@webcontainer/env';
+-import * as z$1 from 'zod';
+-import { z as z$2 } from 'zod';
+-import { dirname as dirname$1 } from 'node:path';
+-import { parseMarkdown, createShikiHighlighter, rehypeHighlight } from '@nuxtjs/mdc/runtime';
++import defu$1, { createDefu, defu as defu$2 } from 'defu';
++import { destr } from 'destr';
++import FastGlob from 'fast-glob';
++import gitUrlParse from 'git-url-parse';
+ import { createJiti } from 'jiti';
+-import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
+-import { visit } from 'unist-util-visit';
+-import { unified } from 'unified';
++import { genDynamicImport } from 'knitwork';
++import { listen } from 'listhen';
+ import { toString } from 'mdast-util-to-string';
+ import { postprocess, preprocess } from 'micromark';
+-import { stringifyPosition } from 'unist-util-stringify-position';
+ import { markdownLineEnding, markdownSpace } from 'micromark-util-character';
+ import { push, splice } from 'micromark-util-chunked';
+ import { resolveAll } from 'micromark-util-resolve-all';
+ import { normalizeUri } from 'micromark-util-sanitize-uri';
+-import { compressTree } from '../dist/runtime/internal/abstract-tree.js';
+-import slugify from 'slugify';
+-import { parseFrontMatter } from 'remark-mdc';
+-import { destr } from 'destr';
++import micromatch from 'micromatch';
++import crypto from 'node:crypto';
++import { createWriteStream } from 'node:fs';
++import { mkdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
++import { dirname as dirname$1 } from 'node:path';
++import { pipeline } from 'node:stream';
++import { promisify } from 'node:util';
+ import { gzip } from 'node:zlib';
++import { hash } from 'ohash';
++import { dirname, extname, isAbsolute, join, relative, resolve } from 'pathe';
++import { readGitConfig } from 'pkg-types';
++import { parseFrontMatter } from 'remark-mdc';
++import { camelCase, kebabCase, pascalCase } from 'scule';
++import { createOnigurumaEngine } from 'shiki/engine/oniguruma';
++import slugify from 'slugify';
++import { extract } from 'tar';
++import { isRelative, withLeadingSlash, withoutTrailingSlash, withTrailingSlash } from 'ufo';
++import { unified } from 'unified';
++import { stringifyPosition } from 'unist-util-stringify-position';
++import { visit } from 'unist-util-visit';
++import { WebSocketServer } from 'ws';
++import * as z$1 from 'zod';
++import { z as z$2 } from 'zod';
++import { ignoreOverride, zodToJsonSchema } from 'zod-to-json-schema';
+ import { printNode, zodToTs } from 'zod-to-ts';
+-import { zodToJsonSchema, ignoreOverride } from 'zod-to-json-schema';
+-import { genDynamicImport } from 'knitwork';
+-import { createDefineConfig, watchConfig, loadConfig } from 'c12';
++import { compressTree } from '../dist/runtime/internal/abstract-tree.js';
++import { getOrderedSchemaKeys } from '../dist/runtime/internal/schema.js';
+ 
+ const version = "3.5.1";
+ 
+@@ -2147,6 +2147,7 @@ function generateCollectionInsert(collection, data) {
+   };
+ }
+ function generateCollectionTableDefinition(collection, opts = {}) {
++  console.log("collection.extendedSchema", collection.extendedSchema)
+   const sortedKeys = getOrderedSchemaKeys(collection.extendedSchema.shape);
+   const sqlFields = sortedKeys.map((key) => {
+     const type = collection.extendedSchema.shape[key];
